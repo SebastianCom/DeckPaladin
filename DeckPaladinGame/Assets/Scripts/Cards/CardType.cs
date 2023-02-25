@@ -16,6 +16,10 @@ public class CardType : MonoBehaviour
     public SpecificCard Card;
     public Vector3 HandPosition;
     public Outline CardOutline;
+
+    public int Damage;
+    public int Armor;
+
     // Start is called before the first frame update
     void Start()
     {

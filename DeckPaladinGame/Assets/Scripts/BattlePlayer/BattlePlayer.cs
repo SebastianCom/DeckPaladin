@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.PackageManager;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BattlePlayer : MonoBehaviour
 {
@@ -20,6 +22,8 @@ public class BattlePlayer : MonoBehaviour
 
     Animator PlayerAnimator = null;
 
+    public GameObject HealthBar;
+
 
     float MoveSpeed = 1.0f;
     float StrikeTime = 3.6f;
@@ -29,19 +33,29 @@ public class BattlePlayer : MonoBehaviour
     bool bReturning = false;
     bool bCardPlayed = false;
     bool bAttacking = false;
+    bool bDamageApplied = false;
+
+    public bool bPlayersTurn = true;
 
     string AnimName = " ";
-    
+
+    public int Health = 25;
+    public int MaxHealth = 25;
+    public int Armor = 0;
+
     void Start()
     {
-        StartingPos= transform.position;
+        HealthBar.GetComponent<Slider>().maxValue = MaxHealth;
+        StartingPos = transform.position;
         PlayerAnimator= GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        HealthBar.GetComponent<Slider>().value = Health;
         HandleCardPlay();
+
 
         if (bAttacking)
             InitiateBattle();
@@ -54,70 +68,73 @@ public class BattlePlayer : MonoBehaviour
 
     private void HandleCardPlay()
     {
-        if (Input.GetMouseButton(0))
+        if(bPlayersTurn)
         {
-            RaycastHit CardHit = new RaycastHit();
-
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out CardHit))
+            if (Input.GetMouseButton(0))
             {
-                if (CardHit.transform.gameObject.GetComponent<CardType>())
+                RaycastHit CardHit = new RaycastHit();
+
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out CardHit))
                 {
-                    CurrentCard = CardHit.transform.gameObject;
-
-                    ScreenPos = Input.mousePosition;
-
-                    ScreenPos.z = Camera.main.nearClipPlane + 2.5f;
-
-                    MousePos = Camera.main.ScreenToWorldPoint(ScreenPos);
-
-                    CardHit.transform.position = MousePos;
-
-                    RaycastHit AreaHovered = new RaycastHit();
-
-                    if (Physics.Raycast(CurrentCard.transform.position, -CurrentCard.transform.up, out AreaHovered))
+                    if (CardHit.transform.gameObject.GetComponent<CardType>())
                     {
-                        if (AreaHovered.transform.gameObject.tag == "Play Area")
+                        CurrentCard = CardHit.transform.gameObject;
+
+                        ScreenPos = Input.mousePosition;
+
+                        ScreenPos.z = Camera.main.nearClipPlane + 2.5f;
+
+                        MousePos = Camera.main.ScreenToWorldPoint(ScreenPos);
+
+                        CardHit.transform.position = MousePos;
+
+                        RaycastHit AreaHovered = new RaycastHit();
+
+                        if (Physics.Raycast(CurrentCard.transform.position, -CurrentCard.transform.up, out AreaHovered))
                         {
-                            CurrentCard.GetComponent<CardType>().CardOutline.enabled = true;
+                            if (AreaHovered.transform.gameObject.tag == "Play Area")
+                            {
+                                CurrentCard.GetComponent<CardType>().CardOutline.enabled = true;
+                            }
+                            else
+                            {
+                                CurrentCard.GetComponent<CardType>().CardOutline.enabled = false;
+                            }
                         }
                         else
                         {
                             CurrentCard.GetComponent<CardType>().CardOutline.enabled = false;
                         }
-                    }
-                    else
-                    {
-                        CurrentCard.GetComponent<CardType>().CardOutline.enabled = false;
-                    }
 
-                    Debug.DrawLine(CurrentCard.transform.position, CurrentCard.transform.position + (-CurrentCard.transform.up * 5));
+                        Debug.DrawLine(CurrentCard.transform.position, CurrentCard.transform.position + (-CurrentCard.transform.up * 5));
+                    }
                 }
             }
-        }
-        else
-        {
-
-            if (CurrentCard != null)
+            else
             {
 
-                RaycastHit AreaReleased = new RaycastHit();
-
-                if (Physics.Raycast(CurrentCard.transform.position, -CurrentCard.transform.up, out AreaReleased))
+                if (CurrentCard != null)
                 {
-                    if (AreaReleased.transform.gameObject.tag == "Play Area")
+
+                    RaycastHit AreaReleased = new RaycastHit();
+
+                    if (Physics.Raycast(CurrentCard.transform.position, -CurrentCard.transform.up, out AreaReleased))
                     {
-                        Debug.Log(CurrentCard.name + " played");
-                        PlayedCard = CurrentCard;
-                        CurrentCard.SetActive(false);
-                        bAttacking = true;
+                        if (AreaReleased.transform.gameObject.tag == "Play Area")
+                        {
+                            Debug.Log(CurrentCard.name + " played");
+                            PlayedCard = CurrentCard;
+                            CurrentCard.SetActive(false);
+                            bAttacking = true;
 
 
+                        }
                     }
                 }
-            }
-            if (!bCardPlayed && CurrentCard)
-            {
-                CurrentCard.transform.position = CurrentCard.GetComponent<CardType>().HandPosition;
+                if (!bCardPlayed && CurrentCard)
+                {
+                    CurrentCard.transform.position = CurrentCard.GetComponent<CardType>().HandPosition;
+                }
             }
         }
     }
@@ -135,7 +152,7 @@ public class BattlePlayer : MonoBehaviour
                 TargetedOpponent = Opponents[0];
             }
 
-            if(PlayedCard.GetComponent<CardType>().Card == SpecificCard.Strike || PlayedCard.GetComponent<CardType>().Card == SpecificCard.Stun) 
+            if(PlayedCard.GetComponent<CardType>().Card == SpecificCard.Strike) 
             {
                 if(bAnimating == false) 
                 {
@@ -147,16 +164,25 @@ public class BattlePlayer : MonoBehaviour
                     }
                     else 
                     {
-                       // Destroy(TargetedOpponent);
                         PlayerAnimator.SetFloat("ForwardSpeed", 0);
                         Timer = StrikeTime;
                         PlayerAnimator.SetBool("Strike", true);
                         AnimName = "Strike";
                         bAnimating = true;
+                        bDamageApplied = true;
 
                     }
                 }
             }
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        int damageTaken = damage - Armor;
+        if (damageTaken > 0)
+        {
+            Health -= damageTaken;
         }
     }
 
@@ -179,6 +205,12 @@ public class BattlePlayer : MonoBehaviour
                 bReturning = true;
                 AnimName = " ";
             }
+            
+            if(Timer > 0.0f && Timer <= 1.5f && bDamageApplied)
+            {
+                TargetedOpponent.GetComponent<Enemy>().TakeDamage(CurrentCard.GetComponent<CardType>().Damage);
+                bDamageApplied = false;
+            }
         }
     }
 
@@ -195,6 +227,8 @@ public class BattlePlayer : MonoBehaviour
             // Destroy(TargetedOpponent);
             PlayerAnimator.SetFloat("ForwardSpeed", 0);
             bReturning = false;
+            bPlayersTurn = false;
+            TargetedOpponent= null;
 
         }
     }
