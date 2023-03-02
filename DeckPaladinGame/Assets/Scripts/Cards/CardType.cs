@@ -11,11 +11,21 @@ public enum SpecificCard
     Stun
 }
 
+public enum MoveType
+{
+    Damage,
+    Buff,
+    Debuff
+}
+
 public class CardType : MonoBehaviour
 {
     public SpecificCard Card;
+    public MoveType moveType;
     public Vector3 HandPosition;
     public Outline CardOutline;
+
+    public GameObject HandSlot;
 
     public int Damage;
     public int Armor;

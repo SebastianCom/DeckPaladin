@@ -43,6 +43,8 @@ public class BattlePlayer : MonoBehaviour
     public int MaxHealth = 25;
     public int Armor = 0;
 
+    public PlayerHand playerHand;
+
     void Start()
     {
         HealthBar.GetComponent<Slider>().maxValue = MaxHealth;
@@ -124,10 +126,11 @@ public class BattlePlayer : MonoBehaviour
                         {
                             Debug.Log(CurrentCard.name + " played");
                             PlayedCard = CurrentCard;
-                            CurrentCard.SetActive(false);
+                            playerHand.PlayCard(CurrentCard);
+                            //CurrentCard.SetActive(false);
                             bAttacking = true;
 
-
+                            return;
                         }
                     }
                 }
@@ -147,42 +150,66 @@ public class BattlePlayer : MonoBehaviour
 
             Opponents = GameObject.FindGameObjectsWithTag("Opponent");
 
-            if(Opponents.Length == 1)
+            CardType playedCard = PlayedCard.GetComponent<CardType>();
+
+            if (Opponents.Length == 1)
             {
                 TargetedOpponent = Opponents[0];
             }
 
-            if(PlayedCard.GetComponent<CardType>().Card == SpecificCard.Strike) 
+            if(playedCard.moveType == MoveType.Damage) 
             {
-                if(bAnimating == false) 
+                if(bAnimating == false)
                 {
-                    if (Vector3.Distance(transform.position, TargetedOpponent.transform.position) >= 1.00f)
-                    {
-                        transform.position = Vector3.Lerp(transform.position, TargetedOpponent.transform.position, MoveSpeed * Time.deltaTime);
-
-                        PlayerAnimator.SetFloat("ForwardSpeed", 1);
-                    }
-                    else 
-                    {
-                        PlayerAnimator.SetFloat("ForwardSpeed", 0);
-                        Timer = StrikeTime;
-                        PlayerAnimator.SetBool("Strike", true);
-                        AnimName = "Strike";
-                        bAnimating = true;
-                        bDamageApplied = true;
-
-                    }
+                    HandleMove(playedCard.Card.ToString(), StrikeTime);
                 }
             }
+            else if(playedCard.moveType == MoveType.Buff)
+            {
+                if (bAnimating == false)
+                {
+                    AnimName = playedCard.Card.ToString();
+                    PlayerAnimator.SetBool(AnimName, true);
+                    Timer = 3.0f;
+                    bAnimating = true;
+                    bDamageApplied = true;
+                }
+            }
+        }
+    }
+
+    private void HandleMove(string Attack, float AnimTime)
+    {
+        if (Vector3.Distance(transform.position, TargetedOpponent.transform.position) >= 1.00f)
+        {
+            transform.position = Vector3.Lerp(transform.position, TargetedOpponent.transform.position, MoveSpeed * Time.deltaTime);
+
+            PlayerAnimator.SetFloat("ForwardSpeed", 1);
+        }
+        else
+        {
+            PlayerAnimator.SetFloat("ForwardSpeed", 0);
+            Timer = AnimTime;
+            PlayerAnimator.SetBool(Attack, true);
+            AnimName = Attack;
+            bAnimating = true;
+            bDamageApplied = true;
+
         }
     }
 
     public void TakeDamage(int damage)
     {
         int damageTaken = damage - Armor;
+        Armor -= damage;
         if (damageTaken > 0)
         {
             Health -= damageTaken;
+        }
+
+        if(Armor < 0.0f)
+        {
+            Armor = 0;
         }
     }
 
@@ -190,15 +217,20 @@ public class BattlePlayer : MonoBehaviour
     {
         if(bAnimating)
         {
-           
+
+            
             if(Timer > 0.0f) 
             {
                 Timer -= Time.deltaTime;
             }
             else
             {
+
+                if (Anim == "Evade" && bDamageApplied)
+                    Armor += CurrentCard.GetComponent<CardType>().Armor;
+
                 PlayerAnimator.SetBool(Anim, false);
-                Destroy(CurrentCard);
+                CurrentCard = null;
                 PlayedCard = null;
                 bAttacking = false;
                 bAnimating= false;
@@ -206,7 +238,7 @@ public class BattlePlayer : MonoBehaviour
                 AnimName = " ";
             }
             
-            if(Timer > 0.0f && Timer <= 1.5f && bDamageApplied)
+            if(Timer > 0.0f && Timer <= 1.5f && bDamageApplied && Anim == "Strike")
             {
                 TargetedOpponent.GetComponent<Enemy>().TakeDamage(CurrentCard.GetComponent<CardType>().Damage);
                 bDamageApplied = false;

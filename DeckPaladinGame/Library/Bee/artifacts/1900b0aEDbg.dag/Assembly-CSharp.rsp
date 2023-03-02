@@ -357,6 +357,7 @@
 -r:"Library/Bee/artifacts/1900b0aEDbg.dag/UnityEditor.UI.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aEDbg.dag/UnityEngine.UI.ref.dll"
 "Assets/Enemy.cs"
+"Assets/PlayerHand.cs"
 "Assets/Scripts/AI/AIDebugGUI.cs"
 "Assets/Scripts/AI/AIState.cs"
 "Assets/Scripts/AI/AIUtils.cs"
@@ -390,6 +391,7 @@
 "Assets/Scripts/Saving/SaveHandler.cs"
 "Assets/Scripts/Saving/SaveUtils.cs"
 "Assets/Scripts/Saving/UniqueIdentifierAttribute.cs"
+"Assets/SlotProperties.cs"
 -langversion:9.0
 
 /deterministic

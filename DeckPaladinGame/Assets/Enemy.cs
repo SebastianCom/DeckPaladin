@@ -53,16 +53,16 @@ public class Enemy : MonoBehaviour
     {
         HealthBar.GetComponent<Slider>().value = Health;
 
-        if (Input.GetKeyDown(KeyCode.P) && !temp)
-        {
-            Health -= 5;
-            Debug.Log("Health = " + Health);
-            temp = true;
-        }
-        else
-        {
-            temp= false;
-        }
+        //if (Input.GetKeyDown(KeyCode.P) && !temp)
+        //{
+        //    Health -= 5;
+        //    Debug.Log("Health = " + Health);
+        //    temp = true;
+        //}
+        //else
+        //{
+        //    temp= false;
+        //}
 
         if(!Player.bPlayersTurn)
         {
