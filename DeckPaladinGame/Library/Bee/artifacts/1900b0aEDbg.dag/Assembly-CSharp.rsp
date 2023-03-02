@@ -356,8 +356,6 @@
 -r:"Library/Bee/artifacts/1900b0aEDbg.dag/Unity.VSCode.Editor.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aEDbg.dag/UnityEditor.UI.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aEDbg.dag/UnityEngine.UI.ref.dll"
-"Assets/Enemy.cs"
-"Assets/PlayerHand.cs"
 "Assets/Scripts/AI/AIDebugGUI.cs"
 "Assets/Scripts/AI/AIState.cs"
 "Assets/Scripts/AI/AIUtils.cs"
@@ -373,7 +371,9 @@
 "Assets/Scripts/Camera/LedgeCameraBehaviour.cs"
 "Assets/Scripts/Camera/ThirdPersonCamera.cs"
 "Assets/Scripts/Cards/CardType.cs"
+"Assets/Scripts/CustomCursor.cs"
 "Assets/Scripts/Debugging/DebugUtils.cs"
+"Assets/Scripts/Enemy.cs"
 "Assets/Scripts/Environment/Bullet.cs"
 "Assets/Scripts/Environment/LedgeTrigger.cs"
 "Assets/Scripts/Environment/WaterBody.cs"
@@ -386,12 +386,13 @@
 "Assets/Scripts/Movement/Player.cs"
 "Assets/Scripts/Movement/PlayerController.cs"
 "Assets/Scripts/Object Pool/ObjectPool.cs"
+"Assets/Scripts/PlayerHand.cs"
 "Assets/Scripts/Saving/RigidBodySaveable.cs"
 "Assets/Scripts/Saving/Saveable.cs"
 "Assets/Scripts/Saving/SaveHandler.cs"
 "Assets/Scripts/Saving/SaveUtils.cs"
 "Assets/Scripts/Saving/UniqueIdentifierAttribute.cs"
-"Assets/SlotProperties.cs"
+"Assets/Scripts/SlotProperties.cs"
 -langversion:9.0
 
 /deterministic

@@ -27,6 +27,8 @@ public class CardType : MonoBehaviour
 
     public GameObject HandSlot;
 
+    public int ManaCost;
+
     public int Damage;
     public int Armor;
 

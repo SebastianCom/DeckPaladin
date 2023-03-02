@@ -34,7 +34,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!33 &4418288722523797036
 MeshFilter:
@@ -116,6 +116,8 @@ MonoBehaviour:
   moveType: 1
   HandPosition: {x: 0, y: 0, z: 0}
   CardOutline: {fileID: 0}
+  HandSlot: {fileID: 0}
+  ManaCost: 1
   Damage: 0
   Armor: 5
 --- !u!114 &4418288722523797038
