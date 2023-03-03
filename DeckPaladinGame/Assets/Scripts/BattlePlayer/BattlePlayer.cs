@@ -34,6 +34,7 @@ public class BattlePlayer : MonoBehaviour
     Animator PlayerAnimator = null;
 
     public GameObject HealthBar;
+    public GameObject PlayerParticleSystem;
 
 
     float MoveSpeed = 1.0f;
@@ -222,7 +223,14 @@ public class BattlePlayer : MonoBehaviour
         {
             PlayerAnimator.SetFloat("ForwardSpeed", 0);
             Timer = AnimTime;
+
+            if (CurrentCard.GetComponent<CardType>().Card == SpecificCard.Stun)
+            {
+                TargetedOpponent.GetComponent<Enemy>().EnemyAnimator.SetBool("KnockedDown", true);
+            }
+
             PlayerAnimator.SetBool(Attack, true);
+            
             AnimName = Attack;
             bDamageApplied = true;
             SetPlayerState(PlayerState.Animating);
@@ -255,6 +263,10 @@ public class BattlePlayer : MonoBehaviour
                 TargetedOpponent.GetComponent<Enemy>().TakeDamage(CurrentCard.GetComponent<CardType>().Damage);
                 bDamageApplied = false;
             }
+            else if (CurrentCard.GetComponent<CardType>().Card == SpecificCard.Stun)
+            {
+                TargetedOpponent.GetComponent<Enemy>().ParticleSystem.GetComponent<ParticleSystem>().Play();
+            }
         }
         
         if(Timer > 0.0f) 
@@ -267,6 +279,7 @@ public class BattlePlayer : MonoBehaviour
             if (Anim == "Evade" && bDamageApplied)
             {
                 Armor += CurrentCard.GetComponent<CardType>().Armor;
+                PlayerParticleSystem.GetComponent<ParticleSystem>().Play();
                 UpdateUI();
             }
             else if (CurrentCard.GetComponent<CardType>().moveType == MoveType.Debuff)
@@ -306,7 +319,8 @@ public class BattlePlayer : MonoBehaviour
                 bSkipNextTurn = false;
             }
 
-            if(Mana <= 0)
+
+            if (Mana <= 0)
                 bPlayersTurn = false;
 
             TargetedOpponent= null;

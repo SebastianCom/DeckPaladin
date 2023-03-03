@@ -32,12 +32,13 @@ public class Enemy : MonoBehaviour
 
     public CardType CurrentAttack;
 
-
-    Animator EnemyAnimator;
+    public GameObject ParticleSystem;
+    public Animator EnemyAnimator;
 
     float MoveSpeed = 1.0f;
     float StrikeTime = 3.6f;
     float Timer = 0.0f;
+    float StunTimer = 3.0f;
 
     bool bDamageApplied = false;
 
@@ -80,10 +81,7 @@ public class Enemy : MonoBehaviour
 
             case EnemyState.Stunned:
                 if (!Player.bPlayersTurn)
-                {
-                    Player.HandleStartTurn();
-                    SetEnemyState(EnemyState.None);
-                }
+                    HandleStunned();
                 break;
 
             case EnemyState.None:
@@ -239,5 +237,27 @@ public class Enemy : MonoBehaviour
             case EnemyState.None:
                 break;
         }
+    }
+
+    public void HandleStunned()
+    {
+        if (StunTimer > 0.0f)
+        {
+            StunTimer -= Time.deltaTime;
+        }
+        else
+        {
+            ParticleSystem.GetComponent<ParticleSystem>().Stop();
+            Player.HandleStartTurn();
+            SetEnemyState(EnemyState.None);
+            StunTimer = 3.0f;
+
+        }
+
+        if (StunTimer > 0.0f && StunTimer <= 1.5f)
+        {
+            EnemyAnimator.SetBool("KnockedDown", false);
+        }
+
     }
 }

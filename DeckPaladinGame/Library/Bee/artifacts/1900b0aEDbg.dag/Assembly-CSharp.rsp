@@ -378,6 +378,7 @@
 "Assets/Scripts/Environment/LedgeTrigger.cs"
 "Assets/Scripts/Environment/WaterBody.cs"
 "Assets/Scripts/Environment/WaterBuoyancyHandler.cs"
+"Assets/Scripts/ManaCounter.cs"
 "Assets/Scripts/Managers/LevelManager.cs"
 "Assets/Scripts/Managers/PoolManager.cs"
 "Assets/Scripts/Math/MathUtils.cs"
@@ -393,6 +394,8 @@
 "Assets/Scripts/Saving/SaveUtils.cs"
 "Assets/Scripts/Saving/UniqueIdentifierAttribute.cs"
 "Assets/Scripts/SlotProperties.cs"
+"Assets/Scripts/TurnIcon.cs"
+"Assets/Travis Game Assets/Status Effects/Demo Scene/Scripts/StatusEffectsPreview.cs"
 -langversion:9.0
 
 /deterministic
